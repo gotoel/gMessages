@@ -47,3 +47,9 @@ export function destroyTray() {
 export function getTray() {
   return tray;
 }
+
+export function updateTrayTooltip(unreadCount = 0) {
+  if (!tray) return;
+  const tip = unreadCount > 0 ? `gMessages (${unreadCount} unread)` : 'gMessages';
+  tray.setToolTip(tip);
+}

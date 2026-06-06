@@ -25,6 +25,22 @@ DevTools (main window only):
 npm run dev
 ```
 
+## Build
+
+Windows installer:
+
+```bash
+npm run build
+```
+
+Unpackaged app directory (for testing):
+
+```bash
+npm run build:dir
+```
+
+Output goes to `dist/`.
+
 ## Features
 
 - Loads messages.google.com with persistent login session
@@ -33,6 +49,8 @@ npm run dev
 - Remembers window size and position
 - Single instance — launching again focuses the existing window
 - Settings window for notification privacy, launch at startup, and start minimized
+- Global shortcut `Ctrl+Shift+M` to show or hide the window
+- Unread count on the taskbar overlay (Windows) or dock badge (macOS)
 
 ## Settings
 
@@ -52,8 +70,10 @@ src/
   window.js         Main BrowserWindow for Google Messages
   tray.js           System tray and context menu
   notifications.js  Native notification handling
+  badge.js          Unread count and taskbar/dock badge
+  shortcuts.js      Global keyboard shortcuts
   settings.js       electron-store + settings window
-  preload.js        Notification API interception
+  preload.js        Notification interception and unread detection
 ui/
   settings.html     Settings page
 assets/

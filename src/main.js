@@ -5,6 +5,8 @@ import { configureGpu } from './gpu.js';
 import { createMainWindow, showMainWindow } from './window.js';
 import { createTray, destroyTray } from './tray.js';
 import { initNotifications, registerNotificationHandlers } from './notifications.js';
+import { registerBadgeHandlers } from './badge.js';
+import { registerShortcuts, unregisterShortcuts } from './shortcuts.js';
 import {
   initSettings,
   registerSettingsHandlers,
@@ -32,6 +34,8 @@ if (!gotLock) {
     registerSettingsHandlers();
     initNotifications();
     registerNotificationHandlers();
+    registerBadgeHandlers();
+    registerShortcuts();
     configureSession();
 
     createTray({
@@ -46,6 +50,7 @@ if (!gotLock) {
 
   app.on('before-quit', () => {
     app.isQuitting = true;
+    unregisterShortcuts();
     destroyTray();
   });
 

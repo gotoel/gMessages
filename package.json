@@ -7,7 +7,9 @@
   "scripts": {
     "start": "electron .",
     "dev": "electron . --dev",
-    "start:safe": "electron . --disable-gpu"
+    "start:safe": "electron . --disable-gpu",
+    "build": "electron-builder --win",
+    "build:dir": "electron-builder --win --dir"
   },
   "author": "gotoel",
   "license": "MIT",
@@ -15,6 +17,30 @@
     "electron-store": "^10.1.0"
   },
   "devDependencies": {
-    "electron": "^35.7.5"
+    "electron": "^35.7.5",
+    "electron-builder": "^26.0.12"
+  },
+  "build": {
+    "appId": "com.gotoel.gmessages",
+    "productName": "gMessages",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "src/**/*",
+      "ui/**/*",
+      "assets/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "icon": "assets/icon.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
   }
 }
