@@ -1,0 +1,20 @@
+{
+  "name": "gmessages",
+  "version": "1.0.0",
+  "description": "Desktop wrapper for Google Messages",
+  "main": "src/main.js",
+  "type": "module",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --dev",
+    "start:safe": "electron . --disable-gpu"
+  },
+  "author": "gotoel",
+  "license": "MIT",
+  "dependencies": {
+    "electron-store": "^10.1.0"
+  },
+  "devDependencies": {
+    "electron": "^35.7.5"
+  }
+}
