@@ -2,7 +2,12 @@ import { app, session } from 'electron';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { configureGpu } from './gpu.js';
-import { createMainWindow, openGoogleMessagesSettings, showMainWindow } from './window.js';
+import {
+  createMainWindow,
+  openGoogleMessagesSettings,
+  showMainWindow,
+  toggleMainWindow,
+} from './window.js';
 import { applyTrayClickBehavior, createTray, destroyTray } from './tray.js';
 import {
   initNotifications,
@@ -63,6 +68,7 @@ if (!gotLock) {
     registerTrayBehaviorApplier(applyTrayClickBehavior);
 
     createTray({
+      onToggle: toggleMainWindow,
       onShow: showMainWindow,
       onSettings: openSettingsWindow,
       onGoogleSettings: openGoogleMessagesSettings,
