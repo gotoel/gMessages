@@ -32,6 +32,7 @@
   "build": {
     "appId": "com.gotoel.gmessages",
     "productName": "gMessages",
+    "publish": null,
     "directories": {
       "output": ".electron-dist",
       "buildResources": "build"
