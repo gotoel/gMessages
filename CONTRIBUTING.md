@@ -66,18 +66,28 @@ Use the GitHub issue templates for bug reports and feature requests. Include you
 
 ## Branch protection (maintainers)
 
-Configure these once in GitHub under **Settings → Branches → Branch protection rules**:
+Pre-built ruleset JSON files live in [`.github/rulesets/`](.github/rulesets/). Import them once in GitHub:
 
-### `main`
+1. **Settings → Rules → Rulesets**
+2. **New ruleset → Import a ruleset**
+3. Select [`.github/rulesets/main.json`](.github/rulesets/main.json), review, and click **Create**
+4. Repeat for [`.github/rulesets/develop.json`](.github/rulesets/develop.json)
 
-- Require a pull request before merging
+### What each ruleset does
+
+**`main.json`**
+
+- Require a pull request before merging (0 approvals — fine for solo maintainers)
 - Require status checks: `check`, `build`
-- Do not allow bypassing the above settings
+- Block force pushes and branch deletion
 
-### `develop`
+**`develop.json`**
 
 - Require status checks: `check`, `build`
-- Pull requests recommended for outside contributors; direct pushes are optional for maintainers
+- Block force pushes and branch deletion
+- No PR requirement (you can push directly while integrating work)
+
+> **Note:** Rulesets may not enforce on private repositories until the repo is public or the account is on GitHub Team. CI still runs either way.
 
 ## Code style
 
