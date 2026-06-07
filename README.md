@@ -1,6 +1,8 @@
 # gMessages
 
-An **unofficial** desktop wrapper for [Google Messages](https://messages.google.com/web). It runs messages.google.com in Electron with session persistence, system tray, and native notifications.
+An **unofficial** desktop wrapper for [Google Messages](https://messages.google.com/web). 
+
+It runs messages.google.com in Electron with session persistence, system tray, and native notifications.
 
 ## Download
 
