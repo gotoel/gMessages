@@ -21,6 +21,14 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const isDev = process.argv.includes('--dev');
 const PARTITION = 'persist:gmessages';
 
+/** Permissions Google Messages may request; everything else is denied. */
+const ALLOWED_PERMISSIONS = new Set([
+  'media',
+  'clipboard-read',
+  'clipboard-sanitized-write',
+  'fullscreen',
+]);
+
 const gotLock = app.requestSingleInstanceLock();
 if (!gotLock) {
   app.quit();
@@ -73,16 +81,11 @@ function configureSession() {
   });
 
   ses.setPermissionRequestHandler((_webContents, permission, callback) => {
-    if (permission === 'notifications') {
-      callback(false);
-      return;
-    }
-    callback(true);
+    callback(ALLOWED_PERMISSIONS.has(permission));
   });
 
   ses.setPermissionCheckHandler((_webContents, permission) => {
-    if (permission === 'notifications') return false;
-    return true;
+    return ALLOWED_PERMISSIONS.has(permission);
   });
 }
 
