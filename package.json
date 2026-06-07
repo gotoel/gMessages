@@ -24,7 +24,7 @@
     "appId": "com.gotoel.gmessages",
     "productName": "gMessages",
     "directories": {
-      "output": "dist"
+      "output": ".electron-dist"
     },
     "files": [
       "src/**/*",

@@ -39,7 +39,7 @@ Unpackaged app directory (for testing):
 npm run build:dir
 ```
 
-Output goes to `dist/`.
+Output goes to `.electron-dist/`.
 
 ## Features
 
