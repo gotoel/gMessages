@@ -69,7 +69,7 @@ function configureSession() {
   ses.registerPreloadScript({
     id: 'gmessages-sw',
     type: 'service-worker',
-    filePath: path.join(__dirname, 'sw-preload.js'),
+    filePath: path.join(__dirname, 'sw-preload.cjs'),
   });
 
   ses.setPermissionRequestHandler((_webContents, permission, callback) => {

@@ -85,15 +85,17 @@ export function openSettingsWindow() {
   }
 
   settingsWindow = new BrowserWindow({
-    width: 480,
-    height: 520,
+    width: 460,
+    height: 560,
+    useContentSize: true,
+    resizable: true,
     minWidth: 400,
     minHeight: 400,
     title: 'gMessages Settings',
     autoHideMenuBar: true,
     icon: path.join(ROOT, 'assets', 'icon.png'),
     webPreferences: {
-      preload: path.join(__dirname, 'settings-preload.js'),
+      preload: path.join(__dirname, 'settings-preload.cjs'),
       contextIsolation: true,
       nodeIntegration: false,
     },

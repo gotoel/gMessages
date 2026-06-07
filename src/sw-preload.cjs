@@ -1,4 +1,4 @@
-import { ipcRenderer } from 'electron';
+const { ipcRenderer } = require('electron');
 
 function forwardNotification(title, body) {
   ipcRenderer.send('notification:show', {

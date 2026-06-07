@@ -31,7 +31,7 @@ export function createMainWindow({ isDev = false } = {}) {
     autoHideMenuBar: true,
     webPreferences: {
       partition: 'persist:gmessages',
-      preload: path.join(__dirname, 'preload.js'),
+      preload: path.join(__dirname, 'preload.cjs'),
       contextIsolation: true,
       nodeIntegration: false,
     },

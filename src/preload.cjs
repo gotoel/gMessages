@@ -1,4 +1,4 @@
-import { contextBridge, ipcRenderer } from 'electron';
+const { contextBridge, ipcRenderer } = require('electron');
 
 contextBridge.exposeInMainWorld('__gmessages', {
   notify: (payload) => ipcRenderer.send('notification:show', payload),
