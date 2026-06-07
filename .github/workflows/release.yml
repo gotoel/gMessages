@@ -42,12 +42,9 @@ jobs:
             cp "$file" release/
           done < <(find electron-dist -maxdepth 1 -type f \( \
             -name 'gMessages Setup *.exe' -o \
-            -name 'gMessages Setup *.exe.blockmap' -o \
             -name 'gMessages-*.AppImage' -o \
             -name 'gMessages-*.dmg' -o \
-            -name 'gMessages-*.dmg.blockmap' -o \
-            -name 'gMessages-*-mac.zip' -o \
-            -name 'gMessages-*-mac.zip.blockmap' \
+            -name 'gMessages-*-mac.zip' \
           \) -print0)
           ls -la release/
 
@@ -76,12 +73,9 @@ jobs:
             cp "$file" release-assets/
           done < <(find dist -type f \( \
             -name 'gMessages Setup *.exe' -o \
-            -name 'gMessages Setup *.exe.blockmap' -o \
             -name 'gMessages-*.AppImage' -o \
             -name 'gMessages-*.dmg' -o \
-            -name 'gMessages-*.dmg.blockmap' -o \
-            -name 'gMessages-*-mac.zip' -o \
-            -name 'gMessages-*-mac.zip.blockmap' \
+            -name 'gMessages-*-mac.zip' \
           \) -print0)
           ls -la release-assets/
           count=$(find release-assets -type f | wc -l)
