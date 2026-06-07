@@ -1,11 +1,11 @@
 # gMessages
 
-An **unofficial** desktop wrapper for [Google Messages](https://messages.google.com/web). This project is not affiliated with, endorsed by, or supported by Google. It runs messages.google.com in Electron with session persistence, system tray, and native notifications.
+An **unofficial** desktop wrapper for [Google Messages](https://messages.google.com/web). It runs messages.google.com in Electron with session persistence, system tray, and native notifications.
 
 ## Requirements
 
 - Node.js 18+
-- Windows (primary target; should work on macOS and Linux)
+- Windows, macOS, or Linux to build; Windows is the primary target
 
 ## Setup
 
@@ -33,19 +33,32 @@ npm run start:safe
 
 ## Build
 
-Windows installer:
+Build icons and package for the current OS:
 
 ```bash
 npm run build
+```
+
+Platform-specific installers (run on matching OS, or in CI):
+
+```bash
+npm run build:win     # Windows .exe (NSIS)
+npm run build:mac     # macOS .dmg + .zip (unsigned)
+npm run build:linux   # Linux .AppImage
 ```
 
 Unpackaged app directory (for testing):
 
 ```bash
 npm run build:dir
+# or: npm run build:dir:win | build:dir:mac | build:dir:linux
 ```
 
-Output goes to `.electron-dist/`. The `build/icon.ico` file is generated automatically before packaging.
+Output goes to `.electron-dist/`. Icons in `build/` are generated automatically before packaging.
+
+### Unsigned builds
+
+Release artifacts are **unsigned**. macOS builds are not notarized — right-click the app and choose Open the first time, or allow it in System Settings. Linux AppImages may need `chmod +x` before running. Windows may show SmartScreen for new publishers.
 
 ## Features
 
@@ -107,7 +120,7 @@ ui/
   settings.html        Settings page
   settings.js          Settings page logic
 scripts/
-  generate-icon-ico.mjs  Build-time PNG → ICO conversion
+  generate-icons.mjs   Build-time PNG → ICO / ICNS / PNG icons
 assets/
   icon.png             App icon
 ```

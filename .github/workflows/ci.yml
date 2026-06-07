@@ -27,9 +27,19 @@ jobs:
           find src ui -type f \( -name '*.js' -o -name '*.cjs' \) -print0 |
             xargs -0 -I{} node --check {}
 
-  build:
-    name: build
-    runs-on: windows-latest
+  build-platform:
+    name: build-${{ matrix.platform }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            platform: win
+          - os: macos-latest
+            platform: mac
+          - os: ubuntu-latest
+            platform: linux
     steps:
       - uses: actions/checkout@v4
 
@@ -40,4 +50,12 @@ jobs:
 
       - run: npm ci
 
-      - run: npm run build:dir
+      - run: npm run build:dir:${{ matrix.platform }}
+
+  build:
+    name: build
+    needs: build-platform
+    runs-on: ubuntu-latest
+    if: ${{ always() && needs.build-platform.result == 'success' }}
+    steps:
+      - run: echo "All platform builds passed"

@@ -9,9 +9,19 @@ permissions:
   contents: write
 
 jobs:
-  release:
-    name: release
-    runs-on: windows-latest
+  build:
+    name: build-${{ matrix.platform }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            platform: win
+          - os: macos-latest
+            platform: mac
+          - os: ubuntu-latest
+            platform: linux
     steps:
       - uses: actions/checkout@v4
 
@@ -22,10 +32,26 @@ jobs:
 
       - run: npm ci
 
-      - run: npm run build -- --publish never
+      - run: npm run build:${{ matrix.platform }}
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: gmessages-${{ matrix.platform }}
+          path: .electron-dist/
+          if-no-files-found: error
+
+  release:
+    name: release
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
 
       - uses: softprops/action-gh-release@v2
         with:
-          files: .electron-dist/*.exe
+          files: dist/**
           generate_release_notes: true
           overwrite_existing: true

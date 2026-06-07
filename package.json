@@ -8,9 +8,15 @@
     "start": "electron .",
     "dev": "electron . --dev",
     "start:safe": "electron . --disable-gpu",
-    "build": "npm run icons && electron-builder --win",
-    "build:dir": "npm run icons && electron-builder --win --dir",
-    "icons": "node scripts/generate-icon-ico.mjs",
+    "build": "npm run icons && electron-builder --publish never",
+    "build:win": "npm run icons && electron-builder --win --publish never",
+    "build:mac": "npm run icons && electron-builder --mac --publish never",
+    "build:linux": "npm run icons && electron-builder --linux --publish never",
+    "build:dir": "npm run icons && electron-builder --dir --publish never",
+    "build:dir:win": "npm run icons && electron-builder --win --dir --publish never",
+    "build:dir:mac": "npm run icons && electron-builder --mac --dir --publish never",
+    "build:dir:linux": "npm run icons && electron-builder --linux --dir --publish never",
+    "icons": "node scripts/generate-icons.mjs",
     "lint": "eslint src ui"
   },
   "engines": {
@@ -42,7 +48,8 @@
     "electron-builder": "^26.0.12",
     "eslint": "^9.39.1",
     "globals": "^16.5.0",
-    "png-to-ico": "^3.0.1"
+    "png-to-ico": "^3.0.1",
+    "png2icons": "^2.0.1"
   },
   "build": {
     "appId": "com.gotoel.gmessages",
@@ -64,7 +71,7 @@
       ],
       "icon": "build/icon.ico",
       "executableName": "gMessages",
-      "signAndEditExecutable": true
+      "signExecutable": false
     },
     "nsis": {
       "oneClick": false,
@@ -75,6 +82,29 @@
       "installerHeaderIcon": "build/icon.ico",
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true
+    },
+    "mac": {
+      "target": [
+        "dmg",
+        "zip"
+      ],
+      "icon": "build/icon.icns",
+      "category": "public.app-category.social-networking",
+      "identity": null,
+      "gatekeeperAssess": false,
+      "hardenedRuntime": false
+    },
+    "dmg": {
+      "title": "gMessages"
+    },
+    "linux": {
+      "target": [
+        "AppImage"
+      ],
+      "icon": "build/icon.png",
+      "category": "Network",
+      "maintainer": "gotoel",
+      "synopsis": "Desktop wrapper for Google Messages"
     }
   }
 }

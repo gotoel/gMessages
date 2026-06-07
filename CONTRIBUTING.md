@@ -34,7 +34,7 @@ Thank you for your interest in contributing. This guide explains how to work on 
    git push origin v1.0.1
    ```
 
-4. GitHub Actions builds the Windows installer and publishes a [GitHub Release](https://github.com/gotoel/gMessages/releases) with the `.exe` attached.
+4. GitHub Actions builds Windows, macOS, and Linux packages and publishes a [GitHub Release](https://github.com/gotoel/gMessages/releases) with all artifacts attached.
 5. Add or edit release notes in the GitHub UI.
 
 ## Development setup
@@ -46,7 +46,7 @@ npm install
 npm start        # run the app
 npm run dev      # run with DevTools
 npm run lint     # ESLint
-npm run build:dir  # unpackaged Windows build for testing
+npm run build:dir  # unpackaged build for the current OS
 ```
 
 ## Pull requests
@@ -58,7 +58,7 @@ npm run build:dir  # unpackaged Windows build for testing
 CI runs on every push and pull request to `main` and `develop`:
 
 - **check** (Ubuntu): lint + JavaScript syntax validation
-- **build** (Windows): `npm run build:dir` to verify packaging
+- **build** (Windows, macOS, Linux): `npm run build:dir:*` to verify packaging on each platform
 
 ## Reporting issues
 

@@ -11,7 +11,7 @@ let trayBehaviorApplier = null;
 export const SETTING_DEFS = {
   launchAtStartup: {
     label: 'Launch at startup',
-    description: 'Open gMessages when you sign in to Windows.',
+    description: 'Open gMessages when you sign in.',
     default: false,
     type: 'toggle',
   },

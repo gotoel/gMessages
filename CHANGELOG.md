@@ -16,12 +16,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Taskbar overlay badge (Windows) and dock badge (macOS/Linux)
 - Global shortcut `Ctrl+Shift+M` to show or hide the window
 - gMessages Settings: launch at startup, start minimized to tray, tray click behavior
-- CI (lint + syntax check + Windows build) and automated GitHub Releases on tag
+- CI (lint + syntax check + Windows/macOS/Linux builds) and automated GitHub Releases on tag
 - Contributing guide, issue templates, and branch ruleset definitions
 
 ### Notes
 
-- This is an **unofficial** project not affiliated with Google
+- This is an **unofficial** desktop wrapper for Google Messages
 - Windows installs register a Start Menu shortcut for correct notification branding
 
 [1.0.0]: https://github.com/gotoel/gMessages/releases/tag/v1.0.0
