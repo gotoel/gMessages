@@ -1,25 +1,20 @@
 import { app } from 'electron';
 
 /**
- * Chromium GPU workarounds on Windows. Use --disable-gpu or GMESSAGES_DISABLE_GPU=1
- * if the app is run from a mapped network drive (error_code=18).
+ * Opt-in GPU workarounds for mapped network drives and other Chromium GPU issues
+ * (error_code=18). Use --disable-gpu or GMESSAGES_DISABLE_GPU=1.
  */
 export function configureGpu() {
   const forceSoftware =
     process.argv.includes('--disable-gpu') ||
     process.env.GMESSAGES_DISABLE_GPU === '1';
 
-  if (process.platform !== 'win32') {
-    if (forceSoftware) {
-      app.disableHardwareAcceleration();
-    }
-    return;
-  }
+  if (!forceSoftware) return;
 
-  app.commandLine.appendSwitch('disable-gpu-sandbox');
-  app.commandLine.appendSwitch('in-process-gpu');
+  app.disableHardwareAcceleration();
 
-  if (forceSoftware) {
-    app.disableHardwareAcceleration();
+  if (process.platform === 'win32') {
+    app.commandLine.appendSwitch('disable-gpu-sandbox');
+    app.commandLine.appendSwitch('in-process-gpu');
   }
 }
