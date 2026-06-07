@@ -82,6 +82,14 @@ assets/
   icon.png          App icon (replace with your own)
 ```
 
+## Contributing
+
+Pull requests are welcome. Please read [CONTRIBUTING.md](CONTRIBUTING.md) before opening one.
+
+- Target the **`develop`** branch for feature and fix work
+- Run `npm run lint` before submitting
+- CI must pass (`check` and `build` jobs) before merge
+
 ## License
 
 MIT

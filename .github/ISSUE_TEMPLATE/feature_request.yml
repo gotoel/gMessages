@@ -1,0 +1,46 @@
+name: Feature request
+description: Suggest an idea for gMessages
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Describe the problem you want solved and how you'd like gMessages to behave.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What limitation or pain point does this address?
+      placeholder: I'm always frustrated when...
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+      description: How would you like this to work?
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Other approaches you've thought about
+    validations:
+      required: false
+
+  - type: dropdown
+    id: os
+    attributes:
+      label: Primary platform
+      options:
+        - Windows
+        - macOS
+        - Linux
+        - All platforms
+    validations:
+      required: false

@@ -34,7 +34,7 @@ function notificationStub(title, options = {}) {
 }
 
 if (typeof ServiceWorkerRegistration !== 'undefined') {
-  const originalShow = ServiceWorkerRegistration.prototype.showNotification;
+  const _originalShow = ServiceWorkerRegistration.prototype.showNotification;
   ServiceWorkerRegistration.prototype.showNotification = function (title, options = {}) {
     forwardNotification(title, options.body || '');
     return Promise.resolve(notificationStub(title, options));
