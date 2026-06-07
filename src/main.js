@@ -2,14 +2,19 @@ import { app, session } from 'electron';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { configureGpu } from './gpu.js';
-import { createMainWindow, showMainWindow } from './window.js';
-import { createTray, destroyTray } from './tray.js';
-import { initNotifications, registerNotificationHandlers } from './notifications.js';
+import { createMainWindow, openGoogleMessagesSettings, showMainWindow } from './window.js';
+import { applyTrayClickBehavior, createTray, destroyTray } from './tray.js';
+import {
+  initNotifications,
+  registerNotificationHandlers,
+  registerServiceWorkerNotificationBridge,
+} from './notifications.js';
 import { registerBadgeHandlers } from './badge.js';
 import { registerShortcuts, unregisterShortcuts } from './shortcuts.js';
 import {
   initSettings,
   registerSettingsHandlers,
+  registerTrayBehaviorApplier,
   applyLaunchAtStartup,
   openSettingsWindow,
 } from './settings.js';
@@ -49,15 +54,18 @@ if (!gotLock) {
     configureWindowsNotifications();
     initSettings();
     registerSettingsHandlers();
+    configureSession();
     initNotifications();
     registerNotificationHandlers();
+    registerServiceWorkerNotificationBridge(PARTITION);
     registerBadgeHandlers();
     registerShortcuts();
-    configureSession();
+    registerTrayBehaviorApplier(applyTrayClickBehavior);
 
     createTray({
       onShow: showMainWindow,
       onSettings: openSettingsWindow,
+      onGoogleSettings: openGoogleMessagesSettings,
       onQuit: quitApp,
     });
 

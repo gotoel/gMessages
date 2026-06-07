@@ -25,18 +25,26 @@ function createToggle(key, def, value) {
   return label;
 }
 
+function resolveSelectValue(def, value) {
+  const match = def.options.find((opt) => String(opt.value) === String(value));
+  return match ? match.value : def.options[0]?.value;
+}
+
 function createSelect(key, def, value) {
   const select = document.createElement('select');
   select.dataset.key = key;
+  const current = resolveSelectValue(def, value);
+
   for (const opt of def.options) {
     const option = document.createElement('option');
     option.value = opt.value;
     option.textContent = opt.label;
-    option.selected = opt.value === value;
+    option.selected = String(opt.value) === String(current);
     select.appendChild(option);
   }
+
   select.addEventListener('change', (e) => {
-    saveSetting(key, e.target.value);
+    saveSetting(key, resolveSelectValue(def, e.target.value));
   });
   return select;
 }

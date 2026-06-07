@@ -1,10 +1,15 @@
 import { Tray, Menu, nativeImage } from 'electron';
 import { getAppIconPath } from './app-icon.js';
+import { getSetting } from './settings.js';
 
 const TRAY_SIZE = 16;
 
 let tray = null;
 let baseTrayIcon = null;
+let trayContextMenu = null;
+let trayOnShow = null;
+let trayClickHandler = null;
+let trayDoubleClickHandler = null;
 
 function getBaseTrayIcon() {
   if (!baseTrayIcon || baseTrayIcon.isEmpty()) {
@@ -65,18 +70,52 @@ export function createTrayIcon(hasUnread = false) {
   return nativeImage.createFromBitmap(bitmap, { width, height });
 }
 
-export function createTray({ onShow, onSettings, onQuit }) {
+function usesDoubleClick() {
+  return Number(getSetting('trayOpenClickCount')) >= 2;
+}
+
+function bindTrayOpenBehavior() {
+  if (!tray || !trayOnShow) return;
+
+  if (trayClickHandler) {
+    tray.removeListener('click', trayClickHandler);
+    trayClickHandler = null;
+  }
+  if (trayDoubleClickHandler) {
+    tray.removeListener('double-click', trayDoubleClickHandler);
+    trayDoubleClickHandler = null;
+  }
+
+  if (usesDoubleClick()) {
+    trayDoubleClickHandler = trayOnShow;
+    tray.on('double-click', trayDoubleClickHandler);
+  } else {
+    trayClickHandler = trayOnShow;
+    tray.on('click', trayClickHandler);
+  }
+}
+
+export function applyTrayClickBehavior() {
+  bindTrayOpenBehavior();
+}
+
+export function createTray({ onShow, onSettings, onGoogleSettings, onQuit }) {
   tray = new Tray(createTrayIcon(false));
+  trayOnShow = onShow;
 
   tray.setToolTip('gMessages');
 
-  const contextMenu = Menu.buildFromTemplate([
+  trayContextMenu = Menu.buildFromTemplate([
     {
-      label: 'Show gMessages',
+      label: 'Show Messages',
       click: onShow,
     },
     {
-      label: 'Settings',
+      label: 'Google Settings',
+      click: onGoogleSettings,
+    },
+    {
+      label: 'gMessages Settings',
       click: onSettings,
     },
     { type: 'separator' },
@@ -86,9 +125,15 @@ export function createTray({ onShow, onSettings, onQuit }) {
     },
   ]);
 
-  tray.setContextMenu(contextMenu);
+  if (process.platform === 'win32') {
+    // Left-click opens the app; right-click opens the menu. setContextMenu on
+    // Windows steals left-click and only opens the menu.
+    tray.on('right-click', () => tray.popUpContextMenu(trayContextMenu));
+  } else {
+    tray.setContextMenu(trayContextMenu);
+  }
 
-  tray.on('double-click', onShow);
+  bindTrayOpenBehavior();
 
   return tray;
 }
@@ -98,6 +143,10 @@ export function destroyTray() {
     tray.destroy();
     tray = null;
   }
+  trayContextMenu = null;
+  trayOnShow = null;
+  trayClickHandler = null;
+  trayDoubleClickHandler = null;
 }
 
 export function getTray() {

@@ -3,6 +3,7 @@ import { getStore } from './settings.js';
 import { getAppIconPath } from './app-icon.js';
 
 const MESSAGES_URL = 'https://messages.google.com/web';
+const GOOGLE_MESSAGES_SETTINGS_URL = 'https://messages.google.com/web/settings';
 
 let mainWindow = null;
 let saveBoundsTimer = null;
@@ -77,10 +78,20 @@ export function showMainWindow() {
   }
   mainWindow.show();
   mainWindow.focus();
+  if (process.platform === 'win32') {
+    app.focus({ steal: true });
+  }
 }
 
 export function hideMainWindow() {
   if (mainWindow && !mainWindow.isDestroyed()) {
     mainWindow.hide();
+  }
+}
+
+export function openGoogleMessagesSettings() {
+  showMainWindow();
+  if (mainWindow && !mainWindow.isDestroyed()) {
+    mainWindow.loadURL(GOOGLE_MESSAGES_SETTINGS_URL);
   }
 }

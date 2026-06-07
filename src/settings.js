@@ -6,18 +6,9 @@ import { fileURLToPath } from 'node:url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, '..');
 
+let trayBehaviorApplier = null;
+
 export const SETTING_DEFS = {
-  notificationPrivacy: {
-    label: 'Notification privacy',
-    description: 'Control how much message content appears in notifications.',
-    default: 'full',
-    type: 'select',
-    options: [
-      { value: 'full', label: 'Full — sender and message preview' },
-      { value: 'private', label: 'Private — sender name only' },
-      { value: 'minimal', label: 'Minimal — "New message" only' },
-    ],
-  },
   launchAtStartup: {
     label: 'Launch at startup',
     description: 'Open gMessages when you sign in to Windows.',
@@ -29,6 +20,16 @@ export const SETTING_DEFS = {
     description: 'Skip the main window on launch and stay in the system tray.',
     default: false,
     type: 'toggle',
+  },
+  trayOpenClickCount: {
+    label: 'Tray icon clicks to open',
+    description: 'How many times to click the tray icon to show gMessages.',
+    default: 1,
+    type: 'select',
+    options: [
+      { value: 1, label: 'Single click' },
+      { value: 2, label: 'Double click' },
+    ],
   },
 };
 
@@ -53,10 +54,25 @@ export function getSetting(key) {
   return store.get(key);
 }
 
+export function registerTrayBehaviorApplier(applier) {
+  trayBehaviorApplier = applier;
+}
+
+function normalizeSettingValue(key, value) {
+  const def = SETTING_DEFS[key];
+  if (def?.type !== 'select') return value;
+
+  const match = def.options.find((opt) => String(opt.value) === String(value));
+  return match ? match.value : value;
+}
+
 export function setSetting(key, value) {
-  store.set(key, value);
+  store.set(key, normalizeSettingValue(key, value));
   if (key === 'launchAtStartup' || key === 'startMinimized') {
     applyLaunchAtStartup();
+  }
+  if (key === 'trayOpenClickCount' && trayBehaviorApplier) {
+    trayBehaviorApplier();
   }
 }
 

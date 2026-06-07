@@ -1,6 +1,6 @@
 # gMessages
 
-Desktop wrapper for [Google Messages](https://messages.google.com/web). Runs messages.google.com in Electron with session persistence, system tray, and native notifications.
+An **unofficial** desktop wrapper for [Google Messages](https://messages.google.com/web). This project is not affiliated with, endorsed by, or supported by Google. It runs messages.google.com in Electron with session persistence, system tray, and native notifications.
 
 ## Requirements
 
@@ -45,10 +45,10 @@ Output goes to `.electron-dist/`.
 
 - Loads messages.google.com with persistent login session
 - Close button minimizes to system tray
-- Native OS notifications with configurable privacy (full / private / minimal)
+- Native OS notifications (privacy controlled in Google Messages settings)
 - Remembers window size and position
 - Single instance — launching again focuses the existing window
-- Settings window for notification privacy, launch at startup, and start minimized
+- Settings window for launch at startup and start minimized
 - Global shortcut `Ctrl+Shift+M` to show or hide the window
 - Unread count on the taskbar overlay (Windows) or dock badge (macOS)
 
@@ -58,7 +58,6 @@ Open from the tray menu → **Settings**.
 
 | Setting | Description |
 |---------|-------------|
-| Notification privacy | Full (sender + preview), Private (sender only), or Minimal |
 | Launch at startup | Register with OS to run on login |
 | Start minimized to tray | Skip showing the main window on launch |
 

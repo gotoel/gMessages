@@ -1,48 +1,69 @@
 const { ipcRenderer } = require('electron');
 
-function forwardNotification(title, body) {
-  ipcRenderer.send('notification:show', {
-    title: String(title || ''),
-    body: String(body || ''),
-  });
+function forwardNotification(title, options = {}) {
+  const payload = {
+    title: String(title || options.title || ''),
+    body: String(options.body || options.message || ''),
+  };
+
+  ipcRenderer.send('notification:show', payload);
+  ipcRenderer.invoke('notification:show', payload).catch(() => {});
 }
 
 function reportUnread(count) {
   ipcRenderer.send('badge:update', count);
 }
 
+function createNotificationStub(title, options = {}) {
+  const stub = {
+    close() {},
+    addEventListener() {},
+    removeEventListener() {},
+    dispatchEvent() {
+      return false;
+    },
+    onclick: null,
+    onshow: null,
+    onerror: null,
+    onclose: null,
+    title: String(title || ''),
+    body: String(options.body || ''),
+    tag: options.tag || '',
+    icon: options.icon || '',
+    data: options.data || null,
+  };
+
+  queueMicrotask(() => {
+    if (typeof stub.onshow === 'function') stub.onshow();
+  });
+
+  return stub;
+}
+
+function patchPermissionsQuery() {
+  if (!navigator.permissions || globalThis.__gmessagesPermsPatched) return;
+  globalThis.__gmessagesPermsPatched = true;
+
+  const originalQuery = navigator.permissions.query.bind(navigator.permissions);
+  navigator.permissions.query = (description) => {
+    const name = typeof description === 'string' ? description : description?.name;
+    if (name === 'notifications') {
+      return Promise.resolve({ state: 'granted', onchange: null });
+    }
+    return originalQuery(description);
+  };
+}
+
 function patchNotification() {
   if (globalThis.__gmessagesNotificationPatched) return;
+  if (typeof globalThis.Notification === 'undefined') return;
   globalThis.__gmessagesNotificationPatched = true;
 
   const OriginalNotification = globalThis.Notification;
 
   function PatchedNotification(title, options = {}) {
-    forwardNotification(title, options.body || '');
-
-    const stub = {
-      close() {},
-      addEventListener() {},
-      removeEventListener() {},
-      dispatchEvent() {
-        return false;
-      },
-      onclick: null,
-      onshow: null,
-      onerror: null,
-      onclose: null,
-      title: String(title || ''),
-      body: String(options.body || ''),
-      tag: options.tag || '',
-      icon: options.icon || '',
-      data: options.data || null,
-    };
-
-    queueMicrotask(() => {
-      if (typeof stub.onshow === 'function') stub.onshow();
-    });
-
-    return stub;
+    forwardNotification(title, options);
+    return createNotificationStub(title, options);
   }
 
   PatchedNotification.permission = 'granted';
@@ -55,6 +76,29 @@ function patchNotification() {
   }
 
   globalThis.Notification = PatchedNotification;
+}
+
+function patchServiceWorkerNotifications() {
+  if (globalThis.__gmessagesSWShowPatched) return;
+  if (typeof ServiceWorkerRegistration === 'undefined') return;
+  globalThis.__gmessagesSWShowPatched = true;
+
+  ServiceWorkerRegistration.prototype.showNotification = function (title, options = {}) {
+    forwardNotification(title, options);
+    return Promise.resolve(createNotificationStub(title, options));
+  };
+}
+
+function applyNotificationPatches() {
+  patchPermissionsQuery();
+  patchNotification();
+  patchServiceWorkerNotifications();
+}
+
+function scheduleNotificationPatches(attempt = 0) {
+  applyNotificationPatches();
+  if (globalThis.__gmessagesSWShowPatched || attempt >= 40) return;
+  setTimeout(() => scheduleNotificationPatches(attempt + 1), 250);
 }
 
 function detectUnreadCount() {
@@ -127,10 +171,18 @@ function startUnreadWatcher() {
   schedulePublish();
 }
 
-patchNotification();
+scheduleNotificationPatches();
 
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', startUnreadWatcher, { once: true });
+  document.addEventListener('DOMContentLoaded', () => {
+    applyNotificationPatches();
+    startUnreadWatcher();
+  }, { once: true });
 } else {
+  applyNotificationPatches();
   startUnreadWatcher();
+}
+
+if (navigator.serviceWorker) {
+  navigator.serviceWorker.addEventListener('controllerchange', applyNotificationPatches);
 }
