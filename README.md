@@ -2,6 +2,16 @@
 
 An **unofficial** desktop wrapper for [Google Messages](https://messages.google.com/web). It runs messages.google.com in Electron with session persistence, system tray, and native notifications.
 
+## Download
+
+| Platform | Installer |
+|----------|-----------|
+| Windows | [gMessages-Setup-win.exe](https://github.com/gotoel/gMessages/releases/latest/download/gMessages-Setup-win.exe) |
+| macOS (Apple Silicon) | [gMessages-mac-arm64.dmg](https://github.com/gotoel/gMessages/releases/latest/download/gMessages-mac-arm64.dmg) · [.zip](https://github.com/gotoel/gMessages/releases/latest/download/gMessages-mac-arm64.zip) |
+| Linux | [gMessages-linux.AppImage](https://github.com/gotoel/gMessages/releases/latest/download/gMessages-linux.AppImage) |
+
+> Builds are unsigned. See [Unsigned builds](#unsigned-builds) for first-launch steps per platform.
+
 ## Screenshots
 
 <details>

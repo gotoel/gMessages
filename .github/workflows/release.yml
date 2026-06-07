@@ -39,13 +39,16 @@ jobs:
         run: |
           mkdir -p release
           while IFS= read -r -d '' file; do
-            cp "$file" release/
-          done < <(find electron-dist -maxdepth 1 -type f \( \
-            -name 'gMessages Setup *.exe' -o \
-            -name 'gMessages-*.AppImage' -o \
-            -name 'gMessages-*.dmg' -o \
-            -name 'gMessages-*-mac.zip' \
-          \) -print0)
+            name=$(basename "$file")
+            case "$name" in
+              gMessages\ Setup\ *.exe)    dest="gMessages-Setup-win.exe" ;;
+              gMessages-*.AppImage)       dest="gMessages-linux.AppImage" ;;
+              gMessages-*-arm64.dmg)      dest="gMessages-mac-arm64.dmg" ;;
+              gMessages-*-arm64-mac.zip)  dest="gMessages-mac-arm64.zip" ;;
+              *) continue ;;
+            esac
+            cp "$file" "release/$dest"
+          done < <(find electron-dist -maxdepth 1 -type f -print0)
           ls -la release/
 
       - uses: actions/upload-artifact@v7
@@ -72,10 +75,10 @@ jobs:
           while IFS= read -r -d '' file; do
             cp "$file" release-assets/
           done < <(find dist -type f \( \
-            -name 'gMessages Setup *.exe' -o \
-            -name 'gMessages-*.AppImage' -o \
-            -name 'gMessages-*.dmg' -o \
-            -name 'gMessages-*-mac.zip' \
+            -name 'gMessages-Setup-win.exe' -o \
+            -name 'gMessages-linux.AppImage' -o \
+            -name 'gMessages-mac-arm64.dmg' -o \
+            -name 'gMessages-mac-arm64.zip' \
           \) -print0)
           ls -la release-assets/
           count=$(find release-assets -type f | wc -l)
