@@ -27,11 +27,6 @@ export function registerNotificationHandlers() {
   ipcMain.on('notification:show', (_event, payload) => {
     handleNotificationPayload(payload);
   });
-
-  ipcMain.handle('notification:show', (_event, payload) => {
-    handleNotificationPayload(payload);
-    return true;
-  });
 }
 
 export function registerServiceWorkerNotificationBridge(partition = 'persist:gmessages') {

@@ -94,3 +94,7 @@ Pre-built ruleset JSON files live in [`.github/rulesets/`](.github/rulesets/). I
 - ESLint is enforced in CI (`npm run lint`)
 - Match existing patterns in surrounding code
 - Keep changes minimal and focused on the task at hand
+
+## Tests
+
+There is no automated test suite yet. Manual testing on Windows is expected before merge. If you add tests in a PR, keep them focused on real behavior rather than trivial assertions.

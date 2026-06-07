@@ -18,6 +18,21 @@
   },
   "author": "gotoel",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gotoel/gMessages.git"
+  },
+  "homepage": "https://github.com/gotoel/gMessages#readme",
+  "bugs": {
+    "url": "https://github.com/gotoel/gMessages/issues"
+  },
+  "keywords": [
+    "google-messages",
+    "electron",
+    "desktop",
+    "sms",
+    "rcs"
+  ],
   "dependencies": {
     "electron-store": "^10.1.0"
   },

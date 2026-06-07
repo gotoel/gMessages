@@ -7,7 +7,6 @@ function forwardNotification(title, options = {}) {
   };
 
   ipcRenderer.send('notification:show', payload);
-  ipcRenderer.invoke('notification:show', payload).catch(() => {});
 }
 
 function reportUnread(count) {

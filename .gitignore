@@ -4,4 +4,3 @@ build/icon.ico
 dist/
 out/
 *.log
-dist-build/

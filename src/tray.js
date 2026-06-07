@@ -107,7 +107,7 @@ export function createTray({ onShow, onSettings, onGoogleSettings, onQuit }) {
 
   trayContextMenu = Menu.buildFromTemplate([
     {
-      label: 'Show Messages',
+      label: 'Show gMessages',
       click: onShow,
     },
     {
