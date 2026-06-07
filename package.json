@@ -8,8 +8,9 @@
     "start": "electron .",
     "dev": "electron . --dev",
     "start:safe": "electron . --disable-gpu",
-    "build": "electron-builder --win",
-    "build:dir": "electron-builder --win --dir",
+    "build": "npm run icons && electron-builder --win",
+    "build:dir": "npm run icons && electron-builder --win --dir",
+    "icons": "node scripts/generate-icon-ico.mjs",
     "lint": "eslint src ui"
   },
   "engines": {
@@ -25,13 +26,15 @@
     "electron": "^42.3.3",
     "electron-builder": "^26.0.12",
     "eslint": "^9.39.1",
-    "globals": "^16.5.0"
+    "globals": "^16.5.0",
+    "png-to-ico": "^3.0.1"
   },
   "build": {
     "appId": "com.gotoel.gmessages",
     "productName": "gMessages",
     "directories": {
-      "output": ".electron-dist"
+      "output": ".electron-dist",
+      "buildResources": "build"
     },
     "files": [
       "src/**/*",
@@ -43,11 +46,19 @@
       "target": [
         "nsis"
       ],
-      "icon": "assets/icon.png"
+      "icon": "build/icon.ico",
+      "executableName": "gMessages",
+      "signAndEditExecutable": true
     },
     "nsis": {
       "oneClick": false,
-      "allowToChangeInstallationDirectory": true
+      "allowToChangeInstallationDirectory": true,
+      "shortcutName": "gMessages",
+      "installerIcon": "build/icon.ico",
+      "uninstallerIcon": "build/icon.ico",
+      "installerHeaderIcon": "build/icon.ico",
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
     }
   }
 }

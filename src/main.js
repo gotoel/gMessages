@@ -13,6 +13,13 @@ import {
   applyLaunchAtStartup,
   openSettingsWindow,
 } from './settings.js';
+import { configureWindowsNotifications, APP_USER_MODEL_ID } from './windows-notifications.js';
+
+app.setName('gMessages');
+
+if (process.platform === 'win32') {
+  app.setAppUserModelId(APP_USER_MODEL_ID);
+}
 
 configureGpu();
 
@@ -23,6 +30,7 @@ const PARTITION = 'persist:gmessages';
 
 /** Permissions Google Messages may request; everything else is denied. */
 const ALLOWED_PERMISSIONS = new Set([
+  'notifications',
   'media',
   'clipboard-read',
   'clipboard-sanitized-write',
@@ -38,6 +46,7 @@ if (!gotLock) {
   });
 
   app.whenReady().then(() => {
+    configureWindowsNotifications();
     initSettings();
     registerSettingsHandlers();
     initNotifications();
@@ -73,6 +82,13 @@ if (!gotLock) {
 
 function configureSession() {
   const ses = session.fromPartition(PARTITION);
+
+  ses.registerPreloadScript({
+    id: 'gmessages-page',
+    type: 'frame',
+    filePath: path.join(__dirname, 'page-main.cjs'),
+    world: 'MAIN',
+  });
 
   ses.registerPreloadScript({
     id: 'gmessages-sw',

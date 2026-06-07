@@ -1,10 +1,6 @@
 import { BrowserWindow, app } from 'electron';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { getStore } from './settings.js';
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const ROOT = path.join(__dirname, '..');
+import { getAppIconPath } from './app-icon.js';
 
 const MESSAGES_URL = 'https://messages.google.com/web';
 
@@ -27,11 +23,10 @@ export function createMainWindow({ isDev = false } = {}) {
     ...bounds,
     show: false,
     title: 'gMessages',
-    icon: path.join(ROOT, 'assets', 'icon.png'),
+    icon: getAppIconPath(),
     autoHideMenuBar: true,
     webPreferences: {
       partition: 'persist:gmessages',
-      preload: path.join(__dirname, 'preload.cjs'),
       contextIsolation: true,
       nodeIntegration: false,
     },

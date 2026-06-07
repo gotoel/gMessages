@@ -1,13 +1,9 @@
 import { Notification, ipcMain, nativeImage } from 'electron';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { getSetting } from './settings.js';
 import { showMainWindow } from './window.js';
+import { getAppIconPath } from './app-icon.js';
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const ROOT = path.join(__dirname, '..');
-
-const icon = nativeImage.createFromPath(path.join(ROOT, 'assets', 'icon.png'));
+const icon = nativeImage.createFromPath(getAppIconPath());
 
 export function initNotifications() {
   if (!Notification.isSupported()) {

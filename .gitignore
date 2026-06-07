@@ -1,4 +1,5 @@
 node_modules/
+build/icon.ico
 .electron-dist/
 dist/
 out/

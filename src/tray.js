@@ -1,21 +1,22 @@
 import { Tray, Menu, nativeImage } from 'electron';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { getAppIconPath } from './app-icon.js';
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const ROOT = path.join(__dirname, '..');
 const TRAY_SIZE = 16;
-const ICON_PATH = path.join(ROOT, 'assets', 'icon.png');
 
 let tray = null;
 let baseTrayIcon = null;
 
 function getBaseTrayIcon() {
   if (!baseTrayIcon || baseTrayIcon.isEmpty()) {
-    baseTrayIcon = nativeImage.createFromPath(ICON_PATH).resize({
+    const iconPath = getAppIconPath();
+    baseTrayIcon = nativeImage.createFromPath(iconPath).resize({
       width: TRAY_SIZE,
       height: TRAY_SIZE,
     });
+
+    if (baseTrayIcon.isEmpty()) {
+      console.warn('Tray icon could not be loaded from', iconPath);
+    }
   }
   return baseTrayIcon;
 }
@@ -55,6 +56,7 @@ function drawUnreadDot(bitmap, width, height) {
 
 export function createTrayIcon(hasUnread = false) {
   const base = getBaseTrayIcon();
+  if (!base || base.isEmpty()) return base;
   if (!hasUnread) return base;
 
   const { width, height } = base.getSize();

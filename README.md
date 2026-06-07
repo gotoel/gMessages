@@ -73,7 +73,8 @@ src/
   badge.js          Unread count and taskbar/dock badge
   shortcuts.js      Global keyboard shortcuts
   settings.js       electron-store + settings window
-  preload.cjs       Notification interception and unread detection
+  page-main.cjs     Notification interception and unread detection (main world)
+  sw-preload.cjs    Service worker notification interception
   settings-preload.cjs  Settings window IPC bridge
 ui/
   settings.html     Settings page
