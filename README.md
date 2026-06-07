@@ -54,7 +54,7 @@ npm run build:dir
 # or: npm run build:dir:win | build:dir:mac | build:dir:linux
 ```
 
-Output goes to `.electron-dist/`. Icons in `build/` are generated automatically before packaging.
+Output goes to `electron-dist/`. Icons in `build/` are generated automatically before packaging.
 
 ### Unsigned builds
 

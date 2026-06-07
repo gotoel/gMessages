@@ -23,21 +23,38 @@ jobs:
           - os: ubuntu-latest
             platform: linux
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
-          node-version: 20
+          node-version: 24
           cache: npm
 
       - run: npm ci
 
       - run: npm run build:${{ matrix.platform }}
 
-      - uses: actions/upload-artifact@v4
+      - name: Stage installers
+        shell: bash
+        run: |
+          mkdir -p release
+          while IFS= read -r -d '' file; do
+            cp "$file" release/
+          done < <(find electron-dist -maxdepth 1 -type f \( \
+            -name 'gMessages Setup *.exe' -o \
+            -name 'gMessages Setup *.exe.blockmap' -o \
+            -name 'gMessages-*.AppImage' -o \
+            -name 'gMessages-*.dmg' -o \
+            -name 'gMessages-*.dmg.blockmap' -o \
+            -name 'gMessages-*-mac.zip' -o \
+            -name 'gMessages-*-mac.zip.blockmap' \
+          \) -print0)
+          ls -la release/
+
+      - uses: actions/upload-artifact@v7
         with:
           name: gmessages-${{ matrix.platform }}
-          path: .electron-dist/
+          path: release/
           if-no-files-found: error
 
   release:
@@ -45,13 +62,78 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           path: dist
           merge-multiple: true
 
-      - uses: softprops/action-gh-release@v2
-        with:
-          files: dist/**
-          generate_release_notes: true
-          overwrite_existing: true
+      - name: Collect installers
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p release-assets
+          while IFS= read -r -d '' file; do
+            cp "$file" release-assets/
+          done < <(find dist -type f \( \
+            -name 'gMessages Setup *.exe' -o \
+            -name 'gMessages Setup *.exe.blockmap' -o \
+            -name 'gMessages-*.AppImage' -o \
+            -name 'gMessages-*.dmg' -o \
+            -name 'gMessages-*.dmg.blockmap' -o \
+            -name 'gMessages-*-mac.zip' -o \
+            -name 'gMessages-*-mac.zip.blockmap' \
+          \) -print0)
+          ls -la release-assets/
+          count=$(find release-assets -type f | wc -l)
+          echo "Collected $count installer files"
+          test "$count" -ge 3
+
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          TAG="${{ github.ref_name }}"
+          REPO="${{ github.repository }}"
+          API="https://api.github.com/repos/${REPO}"
+          AUTH="Authorization: Bearer ${GH_TOKEN}"
+
+          # Delete existing release by ID (never touches the git tag)
+          existing_id=$(curl -sf -H "$AUTH" "${API}/releases/tags/${TAG}" 2>/dev/null \
+            | jq -r '.id // empty' || true)
+          if [ -n "$existing_id" ]; then
+            echo "Deleting existing release id=${existing_id} for ${TAG}"
+            curl -sf -X DELETE -H "$AUTH" "${API}/releases/${existing_id}"
+            sleep 3
+          fi
+
+          # Create release with auto-generated notes
+          echo "Creating release for ${TAG}"
+          create_resp=$(curl -sf -X POST \
+            -H "$AUTH" -H "Content-Type: application/json" \
+            "${API}/releases" \
+            -d "$(jq -n --arg tag "$TAG" \
+              '{tag_name:$tag,generate_release_notes:true,draft:false,prerelease:false}')")
+          release_id=$(echo "$create_resp" | jq -r '.id')
+          upload_url=$(echo "$create_resp" | jq -r '.upload_url | sub("\\{.*}";"") ')
+          echo "Created release id=${release_id}"
+
+          # Upload each installer (handles filenames with spaces via jq @uri encoding)
+          while IFS= read -r -d '' file; do
+            name=$(basename "$file")
+            encoded=$(jq -rn --arg n "$name" '$n | @uri')
+            echo "Uploading: ${name}"
+            curl -sf -X POST \
+              -H "$AUTH" -H "Content-Type: application/octet-stream" \
+              "${upload_url}?name=${encoded}" \
+              --data-binary "@${file}"
+          done < <(find release-assets -type f -print0)
+
+          # Verify asset count
+          asset_count=$(curl -sf -H "$AUTH" "${API}/releases/${release_id}/assets" \
+            | jq 'length')
+          echo "Published ${asset_count} assets to ${TAG}"
+          if [ "$asset_count" -lt 3 ]; then
+            echo "ERROR: expected ≥3 assets, got ${asset_count}" >&2
+            exit 1
+          fi

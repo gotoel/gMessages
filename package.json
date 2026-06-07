@@ -56,7 +56,7 @@
     "productName": "gMessages",
     "publish": null,
     "directories": {
-      "output": ".electron-dist",
+      "output": "electron-dist",
       "buildResources": "build"
     },
     "files": [
@@ -105,6 +105,9 @@
       "category": "Network",
       "maintainer": "gotoel",
       "synopsis": "Desktop wrapper for Google Messages"
+    },
+    "toolsets": {
+      "appimage": "1.0.3"
     }
   }
 }
