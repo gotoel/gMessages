@@ -7,6 +7,7 @@ const TRAY_SIZE = 16;
 let tray = null;
 let baseTrayIcon = null;
 let trayContextMenu = null;
+let trayOnToggle = null;
 let trayOnShow = null;
 let trayClickHandler = null;
 let trayDoubleClickHandler = null;
@@ -75,7 +76,7 @@ function usesDoubleClick() {
 }
 
 function bindTrayOpenBehavior() {
-  if (!tray || !trayOnShow) return;
+  if (!tray || !trayOnToggle) return;
 
   if (trayClickHandler) {
     tray.removeListener('click', trayClickHandler);
@@ -87,10 +88,10 @@ function bindTrayOpenBehavior() {
   }
 
   if (usesDoubleClick()) {
-    trayDoubleClickHandler = trayOnShow;
+    trayDoubleClickHandler = trayOnToggle;
     tray.on('double-click', trayDoubleClickHandler);
   } else {
-    trayClickHandler = trayOnShow;
+    trayClickHandler = trayOnToggle;
     tray.on('click', trayClickHandler);
   }
 }
@@ -99,8 +100,9 @@ export function applyTrayClickBehavior() {
   bindTrayOpenBehavior();
 }
 
-export function createTray({ onShow, onSettings, onGoogleSettings, onQuit }) {
+export function createTray({ onToggle, onShow, onSettings, onGoogleSettings, onQuit }) {
   tray = new Tray(createTrayIcon(false));
+  trayOnToggle = onToggle;
   trayOnShow = onShow;
 
   tray.setToolTip('gMessages');
@@ -144,6 +146,7 @@ export function destroyTray() {
     tray = null;
   }
   trayContextMenu = null;
+  trayOnToggle = null;
   trayOnShow = null;
   trayClickHandler = null;
   trayDoubleClickHandler = null;

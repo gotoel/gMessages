@@ -89,6 +89,17 @@ export function hideMainWindow() {
   }
 }
 
+export function toggleMainWindow({ requireFocus = false } = {}) {
+  const win = getMainWindow();
+  const isOpen = win && !win.isDestroyed() && win.isVisible();
+  const shouldHide = isOpen && (!requireFocus || win.isFocused());
+  if (shouldHide) {
+    hideMainWindow();
+  } else {
+    showMainWindow();
+  }
+}
+
 export function openGoogleMessagesSettings() {
   showMainWindow();
   if (mainWindow && !mainWindow.isDestroyed()) {
