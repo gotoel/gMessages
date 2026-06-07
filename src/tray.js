@@ -8,7 +8,6 @@ let tray = null;
 let baseTrayIcon = null;
 let trayContextMenu = null;
 let trayOnToggle = null;
-let trayOnShow = null;
 let trayClickHandler = null;
 let trayDoubleClickHandler = null;
 
@@ -103,7 +102,6 @@ export function applyTrayClickBehavior() {
 export function createTray({ onToggle, onShow, onSettings, onGoogleSettings, onQuit }) {
   tray = new Tray(createTrayIcon(false));
   trayOnToggle = onToggle;
-  trayOnShow = onShow;
 
   tray.setToolTip('gMessages');
 
@@ -147,7 +145,6 @@ export function destroyTray() {
   }
   trayContextMenu = null;
   trayOnToggle = null;
-  trayOnShow = null;
   trayClickHandler = null;
   trayDoubleClickHandler = null;
 }
