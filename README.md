@@ -2,6 +2,23 @@
 
 An **unofficial** desktop wrapper for [Google Messages](https://messages.google.com/web). It runs messages.google.com in Electron with session persistence, system tray, and native notifications.
 
+## Screenshots
+
+<details>
+<summary>Show screenshots</summary>
+<br>
+
+<img src="docs/screenshots/main.png" alt="Main window" width="700">
+
+<br><br>
+
+<table><tr>
+<td><img src="docs/screenshots/settings.png" alt="Settings" width="320"></td>
+<td valign="middle"><img src="docs/screenshots/tray.png" alt="System tray with unread badge" width="220"></td>
+</tr></table>
+
+</details>
+
 ## Requirements
 
 - Node.js 18+
