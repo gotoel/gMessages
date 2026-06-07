@@ -28,3 +28,4 @@ jobs:
         with:
           files: .electron-dist/*.exe
           generate_release_notes: true
+          overwrite_existing: true

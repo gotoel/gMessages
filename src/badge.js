@@ -1,6 +1,6 @@
 import { app, ipcMain, nativeImage } from 'electron';
 import { getMainWindow } from './window.js';
-import { updateTrayTooltip } from './tray.js';
+import { updateTrayIcon } from './tray.js';
 
 let unreadCount = 0;
 
@@ -24,7 +24,7 @@ export function setUnreadCount(count) {
     win.setOverlayIcon(next > 0 ? createBadgeOverlay(next) : null, `${next} unread`);
   }
 
-  updateTrayTooltip(next);
+  updateTrayIcon(next);
 }
 
 function createBadgeOverlay(count) {
